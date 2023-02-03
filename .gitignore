@@ -21,6 +21,7 @@
 */bin/*
 app/bin
 app/src/main/java/continuous/integration/ngrok
+app/src/main/java/continuous/integration/ngrok.exe
 */ngrok
 
 
