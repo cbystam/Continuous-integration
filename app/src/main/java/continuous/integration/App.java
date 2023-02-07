@@ -4,11 +4,11 @@
 package continuous.integration;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        try {
+            ContinuousIntegrationServer.startServer(8080);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
