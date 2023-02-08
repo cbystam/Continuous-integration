@@ -114,7 +114,7 @@ public class util {
         	pb = new ProcessBuilder(
         			"cmd",
         			"/c",
-        	        "gradlew",
+        	        "gradle",
         	        "test"
         	        );
         	}else {
@@ -125,10 +125,10 @@ public class util {
             	        "test"
         				);
         	}
-        	pb.directory(new File("Test"));
+        	pb.directory(new File(folderPath));
         	Process process = pb.start();       testInfo = new TestInfo();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = null;
+            String line = "";                   testInfo.details = "";
             while ((line = reader.readLine()) != null) {
             	if(line.endsWith("FAILED") || line.endsWith("PASSED") || line.endsWith("SKIPPED")) {
             		testInfo.details += line;
@@ -136,6 +136,7 @@ public class util {
             	}
                 
             }
+            reader.close();
             int exitValue = process.waitFor();
             if (exitValue == 0) {
             	testInfo.status = "SUCCESSFUL";
@@ -162,7 +163,7 @@ public class util {
         	pb = new ProcessBuilder(
         			"cmd",
         			"/c",
-        	        "gradlew",
+        	        "gradle",
         	        "build",
         	        "-x",
         	        "test"
@@ -180,10 +181,9 @@ public class util {
         	pb.directory(new File(repoPath));
         	Process process = pb.start();
 //            Process process = Runtime.getRuntime().exec(new String[]{"cmd", "/c","cd Test && gradlew build -x test"});
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-             buildInfo = new BuildInfo();
-            String line = null;
+            buildInfo = new BuildInfo();            buildInfo.details = "";
+            String line = "";   
             int exitValue = process.waitFor();
             if (exitValue == 0) {
                 buildInfo.status = "SUCCESSFUL";
@@ -193,8 +193,11 @@ public class util {
             		if(line.startsWith("FAILURE"))
                     	break;
             		buildInfo.details += line;
+                    buildInfo.details += "\n";
                 }
+                error.close();
             }
+            process.destroyForcibly();
         } catch (Exception e) {
             e.printStackTrace();
         }
