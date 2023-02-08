@@ -3,6 +3,7 @@
  */
 package continuous.integration;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
@@ -32,6 +33,8 @@ class AppTest {
             util.cloneRepo("https://github.com/arnbaeck/assig2", "testing111");
         });
     }
+
+
      /**
      *Test if a successful clone is made by checking a key word in a txt file. If the clone is successful,
      * the key word will be found.
@@ -43,7 +46,7 @@ class AppTest {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String s = br.readLine();
         br.close();
-        util.deleteRepo("assig2");
+        //util.deleteRepo("assig2");
         assertEquals(s, realString);
     }
 
@@ -52,10 +55,10 @@ class AppTest {
         * This test checks that the function "buildRepo" is successfully building a repo 
         */
     @Test void buildSuccess() throws GitAPIException {
-            util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test1");
-            BuildInfo buildInfo = util.buildRepo("Test");
+            //util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test1");
+            BuildInfo buildInfo = util.buildRepo("assig2");
             assertEquals("SUCCESSFUL", buildInfo.status);
-            util.deleteRepo("Test");
+            util.deleteRepo("assig2");
             
     }
 
@@ -65,10 +68,10 @@ class AppTest {
          * This test checks that the function "buildRepo" is failing while building a repo
          
     @Test void buildFailure() throws GitAPIException {
-            util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test2");
-            BuildInfo buildInfo = util.buildRepo("Test");
+            //util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test2");
+            BuildInfo buildInfo = util.buildRepo("assig2");
             assertEquals("FAILURE", buildInfo.status);
-            util.deleteRepo("Test");
+            util.deleteRepo("assig2");
     }*/
 
 
