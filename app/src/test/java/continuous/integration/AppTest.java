@@ -19,4 +19,14 @@ class AppTest {
             util.cloneRepo("https://github.com/arnbaeck/assig2222", "testing1");
         });
     }
+    /**
+     * This tests to check if the Branch is wrong. Meaning it does not exist or is mispelled.
+     * The method clone repo takes an URI and branch name as parameters.
+     */
+    @Test void wrongBranch() throws GitAPIException {
+        Exception ex = assertThrows(GitAPIException.class, () -> {
+            util.cloneRepo("https://github.com/arnbaeck/assig2", "testing111");
+        });
+    }
+
 }
