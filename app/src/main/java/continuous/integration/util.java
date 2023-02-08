@@ -45,13 +45,14 @@ public class util {
      * @params Takes the URI of the repo and the name of the branch to be cloned.
      * @returns Returns a string giving a success or fail message.
      */
-    public static void cloneRepo(String URI, String branch) throws TransportException, InvalidRemoteException, GitAPIException {
+    public static Git cloneRepo(String URI, String branch) throws TransportException, InvalidRemoteException, GitAPIException {
         Git r = Git.cloneRepository()
                 .setURI(URI)
                 //.setDirectory(new File("")) return status info, "clone failed because uri is not valid"
                 .setBranchesToClone(Arrays.asList("refs/heads/" + branch))
                 .setBranch("refs/heads/" + branch)
                 .call();
+        return r;
     }
     /**
      * Method for deleting the GitHub repo after it has been used.
