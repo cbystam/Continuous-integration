@@ -121,7 +121,7 @@ public class util {
         		pb = new ProcessBuilder(
         				"/bin/bash",
             			"-c",
-            	        "gradlew",
+            	        "gradle",
             	        "test"
         				);
         	}
@@ -171,7 +171,7 @@ public class util {
         		pb = new ProcessBuilder(
         				"/bin/bash",
             			"-c",
-            	        "gradlew",
+            	        "gradle",
             	        "build",
             	        "-x",
             	        "test"
