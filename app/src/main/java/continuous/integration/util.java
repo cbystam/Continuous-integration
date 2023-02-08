@@ -58,17 +58,18 @@ public class util {
      * Method for deleting the GitHub repo after it has been used.
      * @param folderPath The path to folder which is to be deleted. Created by Oguz
      */
-    public static void deleteRepo(String folderPath){
-        String command = null;
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            command = "cmd /c rmdir /s /q " + folderPath;
-        } else {
-            command = "rm -rf " + folderPath;
-        }
+    public static boolean deleteRepo(File folder){
         try {
-            Runtime.getRuntime().exec(command);
-        } catch (IOException e) {
+        	File[] allContents = folder.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteRepo(file);
+            }
+        }
+            return folder.delete();
+        }catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
