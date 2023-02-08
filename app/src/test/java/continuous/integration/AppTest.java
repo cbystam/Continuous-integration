@@ -28,5 +28,19 @@ class AppTest {
             util.cloneRepo("https://github.com/arnbaeck/assig2", "testing111");
         });
     }
+     /**
+     *Test if a successful clone is made by checking a key word in a txt file. If the clone is successful,
+     * the key word will be found.
+     */
+    @Test void cloneTest() throws GitAPIException, IOException {
+        String realString = "testString123";
+        util.cloneRepo("https://github.com/arnbaeck/assig2", "testing1");
+        File file = new File("assig2\\app\\src\\test\\java\\assig2\\test.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String s = br.readLine();
+        br.close();
+        util.deleteRepo("assig2");
+        assertEquals(s, realString);
+    }
 
 }
