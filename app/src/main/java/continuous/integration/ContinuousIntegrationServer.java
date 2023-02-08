@@ -10,8 +10,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import continuous.Models.Payload;
-import continuous.Models.Mail;
+import continuous.Models.*;;
 
 /** 
  Skeleton of a ContinuousIntegrationServer which acts as webhook
@@ -35,9 +34,22 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
         Payload repoInfo = util.JSONConverter(JSON);
 
+        BuildInfo buildInfo;
+        TestInfo testInfo;
         String URL = "https://github.com/"+ repoInfo.repository.full_name;
-        String branch = repoInfo.ref;
+        String[] branchList = repoInfo.ref.split("/");
+        String branch = branchList[branchList.length-1];
+        //System.out.println("Branch Name: " + branch);
+        String[] names = repoInfo.repository.full_name.split("/");
+        String path = names[names.length-1];
+        //System.out.println("Path: " + path);
+        util.cloneRepo(URL, branch);
 
+        buildInfo = util.buildRepo(path);
+
+        if(buildInfo.status == "SUCCESSFUL"){
+            testInfo = util.runTests(path);
+        }
         //To check the url and branch name uncomment the print statement below
         //System.out.println("URL -> " + URL + "Branch ->" + branch);
 
@@ -51,7 +63,16 @@ public class ContinuousIntegrationServer extends AbstractHandler
         String recipient = "cbystam@kth.se";
         // String invalidRecipient = "abcbystam@kth.se";
         String title = "Testmail";
-        String content = "Let us test and see if this works";
+        String content = "Compilation: " + buildInfo.status + "\n" 
+        + "Details: " + "\n" +
+        buildInfo.details + "\n";
+        if(buildInfo.status == "SUCCESSFUL"){
+            content += "Test: " + testInfo.status + "\n" 
+            + "Details:" + "\n" +
+            buildInfo.details;
+        }else{
+
+        }
         try {
             util.sendEmail(recipient, title, content, mail);
         } catch ( MessagingException exc) {
