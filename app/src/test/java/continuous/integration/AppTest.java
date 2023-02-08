@@ -5,9 +5,18 @@ package continuous.integration;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.io.*;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 class AppTest {
-    @Test void dummyTest() {
-        assertEquals(1, 1);
+    
+    /**
+     * This tests to check if the URI is wrong. Meaning it is not available or does not exist.
+     * The method clone repo takes an URI and branch name as parameters.
+     */
+    @Test void wrongURI() throws GitAPIException {
+        Exception ex = assertThrows(GitAPIException.class, () -> {
+            util.cloneRepo("https://github.com/arnbaeck/assig2222", "testing1");
+        });
     }
 }
