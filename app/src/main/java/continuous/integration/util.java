@@ -11,10 +11,12 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Ref;
+
 import java.io.IOException;
 import java.util.Arrays;
 
 import continuous.Models.Payload;
+import continuous.Models.TestInfo;
 import continuous.Models.BuildInfo;
 import continuous.Models.Mail;
 import java.util.Properties;
@@ -22,7 +24,6 @@ import java.util.Properties;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.InternetAddress;
 import javax.mail.*;
-
 
 public class util {
 
@@ -70,6 +71,7 @@ public class util {
         }
     }
 
+
      /** Send an email to a recipient. This will be used to send a build response to
      * the member who called for a build.
      * @param recipient The member who triggered the build.
@@ -102,6 +104,48 @@ public class util {
 
         Transport.send(message);
 
+    public static TestInfo runTests(String folderPath){
+        TestInfo testInfo = null;
+        try {
+        	ProcessBuilder pb;
+        	if (System.getProperty("os.name").startsWith("Windows")) {
+           
+        	pb = new ProcessBuilder(
+        			"cmd",
+        			"/c",
+        	        "gradlew",
+        	        "test"
+        	        );
+        	}else {
+        		pb = new ProcessBuilder(
+        				"/bin/bash",
+            			"-c",
+            	        "gradlew",
+            	        "test"
+        				);
+        	}
+        	pb.directory(new File("Test"));
+        	Process process = pb.start();       testInfo = new TestInfo();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+            	if(line.endsWith("FAILED") || line.endsWith("PASSED") || line.endsWith("SKIPPED")) {
+            		testInfo.details += line;
+            		testInfo.details += "\n";	
+            	}
+                
+            }
+            int exitValue = process.waitFor();
+            if (exitValue == 0) {
+            	testInfo.status = "SUCCESSFUL";
+            } else {
+            	testInfo.status = "FAILURE";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return testInfo;
     }
     
     /**

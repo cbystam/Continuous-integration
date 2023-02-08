@@ -3,10 +3,15 @@
  */
 package continuous.integration;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
+import java.util.Formatter.BigDecimalLayoutForm;
+
 import org.eclipse.jgit.api.errors.GitAPIException;
+import continuous.Models.BuildInfo;
+
 
 class AppTest {
     
@@ -28,5 +33,46 @@ class AppTest {
             util.cloneRepo("https://github.com/arnbaeck/assig2", "testing111");
         });
     }
+
+
+     /**
+     *Test if a successful clone is made by checking a key word in a txt file. If the clone is successful,
+     * the key word will be found.
+     */
+    @Test void cloneTest() throws GitAPIException, IOException {
+        String realString = "testString123";
+        util.cloneRepo("https://github.com/arnbaeck/assig2", "testing1");
+        File file = new File("assig2\\app\\src\\test\\java\\assig2\\test.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String s = br.readLine();
+        br.close();
+        //util.deleteRepo("assig2");
+        assertEquals(s, realString);
+    }
+
+       /**
+        * A successful test for "buildRepo" function
+        * This test checks that the function "buildRepo" is successfully building a repo 
+        */
+    @Test void buildSuccess() throws GitAPIException {
+            //util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test1");
+            BuildInfo buildInfo = util.buildRepo("assig2");
+            assertEquals("SUCCESSFUL", buildInfo.status);
+            util.deleteRepo("assig2");
+            
+    }
+
+
+        /**
+         * A failure test to for "buildRepo" function
+         * This test checks that the function "buildRepo" is failing while building a repo
+         
+    @Test void buildFailure() throws GitAPIException {
+            //util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test2");
+            BuildInfo buildInfo = util.buildRepo("assig2");
+            assertEquals("FAILURE", buildInfo.status);
+            util.deleteRepo("assig2");
+    }*/
+
 
 }
