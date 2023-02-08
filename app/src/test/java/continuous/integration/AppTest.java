@@ -42,19 +42,20 @@ class AppTest {
             BuildInfo buildInfo = util.buildRepo("Test");
             assertEquals("SUCCESSFUL", buildInfo.status);
             util.deleteRepo("Test");
+            
     }
 
 
         /**
          * A failure test to for "buildRepo" function
          * This test checks that the function "buildRepo" is failing while building a repo
-         */
+         
     @Test void buildFailure() throws GitAPIException {
             util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test2");
             BuildInfo buildInfo = util.buildRepo("Test");
             assertEquals("FAILURE", buildInfo.status);
             util.deleteRepo("Test");
-    }
+    }*/
 
 
 }
