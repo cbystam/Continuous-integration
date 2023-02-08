@@ -17,5 +17,4 @@ public class util {
         }
         return new Payload();
     }
-    
 }
