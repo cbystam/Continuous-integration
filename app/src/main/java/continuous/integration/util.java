@@ -103,6 +103,7 @@ public class util {
         message.setText(content);
 
         Transport.send(message);
+    }
 
     public static TestInfo runTests(String folderPath){
         TestInfo testInfo = null;
