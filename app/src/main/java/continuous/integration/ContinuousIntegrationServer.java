@@ -2,6 +2,7 @@ package continuous.integration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
+import javax.mail.MessagingException;
  
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import continuous.Models.Payload;
+import continuous.Models.Mail;
 
 /** 
  Skeleton of a ContinuousIntegrationServer which acts as webhook
@@ -43,6 +45,18 @@ public class ContinuousIntegrationServer extends AbstractHandler
         // for example
         // 1st clone your repository
         // 2nd compile the code
+
+        Mail mail = new Mail();
+
+        String recipient = "cbystam@kth.se";
+        // String invalidRecipient = "abcbystam@kth.se";
+        String title = "Testmail";
+        String content = "Let us test and see if this works";
+        try {
+            util.sendEmail(recipient, title, content, mail);
+        } catch ( MessagingException exc) {
+            exc.printStackTrace();
+        }
 
         response.getWriter().println("CI job done");
     }

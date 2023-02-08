@@ -16,6 +16,12 @@ import java.util.Arrays;
 
 import continuous.Models.Payload;
 import continuous.Models.BuildInfo;
+import continuous.Models.Mail;
+import java.util.Properties;
+
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.InternetAddress;
+import javax.mail.*;
 
 
 public class util {
@@ -33,6 +39,7 @@ public class util {
     }
 
     /**
+
      * Method for cloning the specific branch from GitHub.
      * @params Takes the URI of the repo and the name of the branch to be cloned.
      * @returns Returns a string giving a success or fail message.
@@ -61,6 +68,40 @@ public class util {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+     /** Send an email to a recipient. This will be used to send a build response to
+     * the member who called for a build.
+     * @param recipient The member who triggered the build.
+     * @param title The title of the mail
+     * @param content The content of the mail, i.e. the build result.
+     */
+    public static void sendEmail (String recipient, String title, String content, Mail mail) 
+                                    throws MessagingException {
+        Properties props = new Properties();
+
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.host", mail.host);
+        props.put("mail.smtp.port", mail.port);
+        props.put("mail.smtp.from", mail.senderEmail);
+        props.put("mail.debug", mail.debug);
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+
+                return new PasswordAuthentication(mail.username, mail.password);
+            }
+        });
+        
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(mail.senderEmail); 
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+        message.setSubject(title);
+        message.setText(content);
+
+        Transport.send(message);
+
     }
     
     /**
