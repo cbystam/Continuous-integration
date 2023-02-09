@@ -49,7 +49,7 @@ public class util {
         Git r = Git.cloneRepository()
                 .setURI(URI)
                 //.setDirectory(new File("")) return status info, "clone failed because uri is not valid"
-                .setBranchesToClone(Arrays.asList("refs/heads/" + branch))
+                .setBranchesToClone(Arrays.asList(branch))
                 .setBranch("refs/heads/" + branch)
                 .call();
         return r;
