@@ -26,7 +26,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.*;
 
 public class util {
-
+    /** 
+     
+     * This method converts given JSON to the Payload java object. 
+     * @param JSON String in JSON format 
+     * @return returns the created Payload object 
+     */
     public static Payload JSONConverter(String JSON){
         try{
             ObjectMapper mapper = new ObjectMapper();
