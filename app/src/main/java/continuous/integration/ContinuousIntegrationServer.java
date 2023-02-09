@@ -35,7 +35,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
         System.out.println(target);
         response.getWriter().println("CI job done");
         String JSON = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        System.out.println(JSON);
+        //System.out.println(JSON);
         Payload repoInfo = util.JSONConverter(JSON);
 
         BuildInfo buildInfo;
@@ -87,6 +87,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
         try {
             util.sendEmail(recipient, title, content, mail);
+            System.out.println(content);
         } catch ( MessagingException exc) {
             exc.printStackTrace();
         }
