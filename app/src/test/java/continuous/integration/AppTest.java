@@ -11,6 +11,17 @@ import java.util.Formatter.BigDecimalLayoutForm;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import continuous.Models.BuildInfo;
+import continuous.Models.Mail;
+
+import java.util.Properties;
+import java.net.PasswordAuthentication;
+
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Store;
 
 
 class AppTest {
@@ -79,5 +90,50 @@ class AppTest {
             util.deleteRepo("assig2");
     }*/
 
+    /**
+     * Test that the sendMail function works correctly.
+     */
+    @Test void testMail() {
+        Mail mail = new Mail();
+        String recipient = "dd2480group23@gmail.com";
+        String title = "Testmail";
+        String content = "Testcontent";
+
+        try {
+            util.sendEmail(recipient, title, content, mail);
+        } catch ( MessagingException exc) {
+            exc.printStackTrace();
+        }
+
+        // Now check the inbox and see if the mail has been retrieved.
+
+        String host = "pop.gmail.com";
+        String mailStoreType = "pop3";
+
+        Properties props = new Properties();
+
+        props.put("mail.pop3.host", host);
+        props.put("mail.pop3.port", 995);
+        props.put("mail.pop3.starttls.enable", "true");
+
+        Session session = Session.getInstance(props);
+        try {
+            Store store = session.getStore("pop3s");
+            store.connect(host, mail.username, mail.password);
+
+            Folder emailFolder = store.getFolder("INBOX");
+            emailFolder.open(Folder.READ_ONLY);
+
+            Message[] messages = emailFolder.getMessages();
+            Message latestMessage = messages[messages.length];
+
+            assertEquals(latestMessage.getSubject(), "Testmail");
+            assertEquals(latestMessage.getContent(), "Testcontent");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
 
 }
+
