@@ -16,6 +16,12 @@ repositories {
     mavenCentral()
 }
 
+test {
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED"
+    }
+}
+
 dependencies {
 
     // https://central.sonatype.dev/artifact/org.eclipse.jgit/org.eclipse.jgit/
@@ -25,7 +31,7 @@ dependencies {
     // GPG support for JGit based on BouncyCastle (commit signing)
     implementation 'org.eclipse.jgit:org.eclipse.jgit.gpg.bc:6.4.0.202211300538-r'
     implementation 'org.testng:testng:7.1.0'
-    
+    implementation 'org.slf4j:slf4j-nop:1.7.25'
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 
