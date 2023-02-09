@@ -11,6 +11,7 @@ import java.util.Formatter.BigDecimalLayoutForm;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import continuous.Models.BuildInfo;
+import continuous.Models.TestInfo;
 import continuous.Models.Mail;
 
 import java.util.Properties;
@@ -133,6 +134,34 @@ class AppTest {
         }
         
     }
+
+    /**
+     * This test checks if the runTests method returns correct result when the all tests are passed. 
+     * Expected -> SUCCESSFUL
+     */
+
+     @Test void testSuccessful() throws GitAPIException{
+        Git git = util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "main");
+        TestInfo testInfo = util.runTests("Test");
+        git.getRepository().close();
+        util.deleteRepo(new File("Test"));
+        assertEquals("SUCCESSFUL", testInfo.status);
+    }
+
+    
+   /**
+    * This test checks if the runTests method returns correct result when a test fails.
+    * Expected -> FAILURE
+    */
+    @Test void testFailure() throws GitAPIException{
+        Git git = util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test3");
+        TestInfo testInfo = util.runTests("Test");
+        git.getRepository().close();
+        util.deleteRepo(new File("Test"));
+        assertEquals("FAILURE", testInfo.status);
+   }
+
+
 
 }
 
