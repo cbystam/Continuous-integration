@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
 import java.util.Formatter.BigDecimalLayoutForm;
-
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import continuous.Models.BuildInfo;
 import continuous.Models.Mail;
@@ -52,17 +52,13 @@ class AppTest {
      */
     @Test void cloneTest() throws GitAPIException, IOException {
         String realString = "testString123";
-        util.cloneRepo("https://github.com/arnbaeck/assig2", "testing1");
-        File file;
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            file = new File("assig2\\app\\src\\test\\java\\assig2\\test.txt");
-        } else {
-            file = new File("assig2/app/src/test/java/assig2/test.txt");
-        }
+        Git git = util.cloneRepo("https://github.com/arnbaeck/assig2", "testing1");
+        File file = new File("assig2\\app\\src\\test\\java\\assig2\\test.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String s = br.readLine();
         br.close();
-        //util.deleteRepo("assig2");
+        git.getRepository().close();
+        util.deleteRepo(new File("assig2"));
         assertEquals(s, realString);
     }
 
@@ -71,24 +67,27 @@ class AppTest {
         * This test checks that the function "buildRepo" is successfully building a repo 
         */
     @Test void buildSuccess() throws GitAPIException {
-            //util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test1");
-            BuildInfo buildInfo = util.buildRepo("assig2");
+            Git git = util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test1");
+            BuildInfo buildInfo = util.buildRepo("Test");
+            git.getRepository().close();
+            util.deleteRepo(new File("Test"));
             assertEquals("SUCCESSFUL", buildInfo.status);
-            util.deleteRepo("assig2");
             
     }
 
 
         /**
-         * A failure test to for "buildRepo" function
-         * This test checks that the function "buildRepo" is failing while building a repo
-         
+        * A failure test to for "buildRepo" function
+        * This test checks that the function "buildRepo" is failing while building a repo
+        */    
     @Test void buildFailure() throws GitAPIException {
-            //util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test2");
-            BuildInfo buildInfo = util.buildRepo("assig2");
+            Git git = util.cloneRepo("https://github.com/AhmetOguzEngin/Test", "test2");
+            BuildInfo buildInfo = util.buildRepo("Test");
+            git.getRepository().close();
+            System.out.println("a");
+            util.deleteRepo(new File("Test"));
             assertEquals("FAILURE", buildInfo.status);
-            util.deleteRepo("assig2");
-    }*/
+    }
 
     /**
      * Test that the sendMail function works correctly.
