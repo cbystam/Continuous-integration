@@ -26,7 +26,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.*;
 
 public class util {
-
+    /** 
+     
+     * This method converts given JSON to the Payload java object. 
+     * @param JSON String in JSON format 
+     * @return returns the created Payload object 
+     */
     public static Payload JSONConverter(String JSON){
         try{
             ObjectMapper mapper = new ObjectMapper();
@@ -106,6 +111,15 @@ public class util {
 
         Transport.send(message);
     }
+
+    /**
+     * This method runs "gradle test" command to run tests of the project. 
+     * According to the result it fills the fields of testInfo object.
+     * testinfo.status -> "SUCCESSFUL" or "FAILURE"
+     * tesinfo.details -> "the status of each test (PASSED - FAILED - SKIPPED)"
+     * @param folderPath The path to folder which is to be deleted.
+     * @return testInfo object which includes status of the tests and details about the result.
+     */
 
     public static TestInfo runTests(String folderPath){
         TestInfo testInfo = null;
