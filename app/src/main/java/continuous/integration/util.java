@@ -45,29 +45,31 @@ public class util {
      * @params Takes the URI of the repo and the name of the branch to be cloned.
      * @returns Returns a string giving a success or fail message.
      */
-    public static void cloneRepo(String URI, String branch) throws TransportException, InvalidRemoteException, GitAPIException {
+    public static Git cloneRepo(String URI, String branch) throws TransportException, InvalidRemoteException, GitAPIException {
         Git r = Git.cloneRepository()
                 .setURI(URI)
                 //.setDirectory(new File("")) return status info, "clone failed because uri is not valid"
                 .setBranchesToClone(Arrays.asList("refs/heads/" + branch))
                 .setBranch("refs/heads/" + branch)
                 .call();
+        return r;
     }
     /**
      * Method for deleting the GitHub repo after it has been used.
      * @param folderPath The path to folder which is to be deleted. Created by Oguz
      */
-    public static void deleteRepo(String folderPath){
-        String command = null;
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            command = "cmd /c rmdir /s /q " + folderPath;
-        } else {
-            command = "rm -rf " + folderPath;
-        }
+    public static boolean deleteRepo(File folder){
         try {
-            Runtime.getRuntime().exec(command);
-        } catch (IOException e) {
+        	File[] allContents = folder.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteRepo(file);
+            }
+        }
+            return folder.delete();
+        }catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -114,7 +116,7 @@ public class util {
         	pb = new ProcessBuilder(
         			"cmd",
         			"/c",
-        	        "gradlew",
+        	        "gradle",
         	        "test"
         	        );
         	}else {
@@ -125,10 +127,10 @@ public class util {
             	        "test"
         				);
         	}
-        	pb.directory(new File("Test"));
+        	pb.directory(new File(folderPath));
         	Process process = pb.start();       testInfo = new TestInfo();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = null;
+            String line = "";                   testInfo.details = "";
             while ((line = reader.readLine()) != null) {
             	if(line.endsWith("FAILED") || line.endsWith("PASSED") || line.endsWith("SKIPPED")) {
             		testInfo.details += line;
@@ -136,6 +138,7 @@ public class util {
             	}
                 
             }
+            reader.close();
             int exitValue = process.waitFor();
             if (exitValue == 0) {
             	testInfo.status = "SUCCESSFUL";
@@ -162,7 +165,7 @@ public class util {
         	pb = new ProcessBuilder(
         			"cmd",
         			"/c",
-        	        "gradlew",
+        	        "gradle",
         	        "build",
         	        "-x",
         	        "test"
@@ -180,10 +183,9 @@ public class util {
         	pb.directory(new File(repoPath));
         	Process process = pb.start();
 //            Process process = Runtime.getRuntime().exec(new String[]{"cmd", "/c","cd Test && gradlew build -x test"});
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-             buildInfo = new BuildInfo();
-            String line = null;
+            buildInfo = new BuildInfo();            buildInfo.details = "";
+            String line = "";   
             int exitValue = process.waitFor();
             if (exitValue == 0) {
                 buildInfo.status = "SUCCESSFUL";
@@ -193,8 +195,11 @@ public class util {
             		if(line.startsWith("FAILURE"))
                     	break;
             		buildInfo.details += line;
+                    buildInfo.details += "\n";
                 }
+                error.close();
             }
+            process.destroyForcibly();
         } catch (Exception e) {
             e.printStackTrace();
         }
