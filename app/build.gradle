@@ -16,35 +16,23 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
+test {
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED"
+    }
+}
 
-    // https://central.sonatype.dev/artifact/org.eclipse.jgit/org.eclipse.jgit/
-    implementation 'org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r'
-    // SSH support for JGit based on Apache MINA sshd
-    implementation 'org.eclipse.jgit:org.eclipse.jgit.ssh.apache:6.4.0.202211300538-r'
-    // GPG support for JGit based on BouncyCastle (commit signing)
-    implementation 'org.eclipse.jgit:org.eclipse.jgit.gpg.bc:6.4.0.202211300538-r'
-    implementation 'org.testng:testng:7.1.0'
-    
+dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
-
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.8.9'
-    implementation 'org.glassfish.jersey.containers:jersey-container-servlet:2.5'
-    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.5'
-    implementation 'org.eclipse.jetty:jetty-webapp:7.0.2.v20100331'
-    implementation 'org.eclipse.jetty:jetty-server:7.0.2.v20100331'
-
-    implementation 'com.sun.mail:javax.mail:1.6.2'
-
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'continuous.integration.App'
+    mainClass = 'test.App'
 }
 
 tasks.named('test') {
